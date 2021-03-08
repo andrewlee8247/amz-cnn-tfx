@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+.kaggle
+.idea
+./models/train-jpg.tar.7z
