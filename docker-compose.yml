@@ -1,0 +1,35 @@
+version: '3.7'
+
+x-logging:
+  &default-logging
+  options:
+    max-size: '1m'
+    max-file: '1'
+  driver: json-file
+services:
+  amazon-ml:
+    container_name: amazon-ml
+    build:
+        context: ./
+        dockerfile: ./models/docker/Dockerfile
+    logging: *default-logging
+    volumes:
+      - app:/app
+    environment:
+      PYTHONUNBUFFERED: 1
+    command: ["python", "/app/models/model.py"]
+  amazon-tfx:
+    container_name: amazon-tfx
+    ports:
+      - 8501:8501
+    build:
+        context: ./
+        dockerfile: ./tfx/docker/Dockerfile
+    logging: *default-logging
+    volumes:
+      - app:/app
+    depends_on:
+      - "amazon-ml"
+
+volumes:
+  app:
